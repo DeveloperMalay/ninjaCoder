@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/employee/employee_model.dart';
@@ -35,7 +37,9 @@ class EmployeeDatabaseClient {
 
   Future<int> insertEmployee(EmployeeModel employee) async {
     final db = await database;
-    return await db.insert('employees', employee.toJson());
+    var res = await db.insert('employees', employee.toJson());
+    log('insert data response $res');
+    return res;
   }
 
   Future<List<EmployeeModel>> getAllEmployees() async {

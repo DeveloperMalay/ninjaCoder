@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
 
 import 'src/presentation/screens/employee_list_screen.dart';
 
@@ -11,14 +13,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: false,
+    return BlocProvider(
+      create: (context) => EmployeeCubit(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: false,
+        ),
+        home: const EmployeeListScreen(),
       ),
-      home: const EmployeeListScreen(),
     );
   }
 }
