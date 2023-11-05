@@ -18,6 +18,10 @@ class EmployeeDatabaseClient {
     return _database!;
   }
 
+  Future<void> initDatabase() async {
+    _database = await _initDatabase();
+  }
+
   Future<Database> _initDatabase() async {
     final path = join(await getDatabasesPath(), 'employee_database.db');
     return await openDatabase(path, version: 1, onCreate: _createDatabase);

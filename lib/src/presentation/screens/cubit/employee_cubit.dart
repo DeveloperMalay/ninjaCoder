@@ -14,6 +14,14 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     emit(state.copyWith(role: role));
   }
 
+  void selectStartDate(DateTime date) {
+    emit(state.copyWith(startDate: date));
+  }
+
+  void selectEndDate(DateTime date) {
+    emit(state.copyWith(endDate: date));
+  }
+
   final dbClient = EmployeeDatabaseClient.instance;
   //*inserting data to local DB
   void insertData(EmployeeModel model) async {

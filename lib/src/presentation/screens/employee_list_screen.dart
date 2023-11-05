@@ -53,11 +53,155 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 15),
                     ListView.builder(
                         shrinkWrap: true,
                         itemCount: state.employeedata.length,
                         itemBuilder: (context, index) {
-                          return Container();
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  state.employeedata[index].fullName ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF323238),
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  state.employeedata[index].role ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF949C9E),
+                                    fontSize: 14,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  state.employeedata[index].started ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF949C9E),
+                                    fontSize: 12,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              if (index != state.employeedata.length - 1)
+                                Divider(
+                                  color: Colors.grey.withOpacity(.15),
+                                  thickness: 1,
+                                )
+                            ],
+                          );
+                        }),
+                    Container(
+                      width: context.screenWidth,
+                      height: 56,
+                      decoration:
+                          BoxDecoration(color: Colors.grey.withOpacity(.15)),
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Text(
+                          'Previous employees',
+                          style: TextStyle(
+                            color: Color(0xFF1DA1F2),
+                            fontSize: 16,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.employeedata.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  state.employeedata[index].fullName ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF323238),
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Text(
+                                  state.employeedata[index].role ?? '',
+                                  style: const TextStyle(
+                                    color: Color(0xFF949C9E),
+                                    fontSize: 14,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      state.employeedata[index].started ?? '',
+                                      style: const TextStyle(
+                                        color: Color(0xFF949C9E),
+                                        fontSize: 12,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Text(
+                                      state.employeedata[index].end ?? '',
+                                      style: const TextStyle(
+                                        color: Color(0xFF949C9E),
+                                        fontSize: 12,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              if (index != state.employeedata.length - 1)
+                                Divider(
+                                  color: Colors.grey.withOpacity(.15),
+                                  thickness: 1,
+                                )
+                            ],
+                          );
                         }),
                   ],
                 ),
