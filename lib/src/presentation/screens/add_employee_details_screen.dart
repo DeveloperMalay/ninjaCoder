@@ -278,6 +278,7 @@ class _AddEmpoyeeDetailsScreenState
                             role: state.role,
                           );
                           context.read<EmployeeCubit>().insertData(model);
+                          Navigator.pop(context);
                         }
                       },
                       child: Container(

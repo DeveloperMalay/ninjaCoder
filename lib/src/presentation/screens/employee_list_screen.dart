@@ -27,7 +27,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
             leading: Container(),
             title: const Text('Employee List'),
           ),
-          body: state.employeedata.isNotEmpty
+          body: state.employeedata.isEmpty
               ? Center(
                   child: SvgPicture.asset('assets/no_employee.svg'),
                 )
@@ -58,57 +58,61 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                         shrinkWrap: true,
                         itemCount: state.employeedata.length,
                         itemBuilder: (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  state.employeedata[index].fullName ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF323238),
-                                    fontSize: 16,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
+                          var data = state.employeedata[index];
+                          return Dismissible(
+                            key: Key((data.id ?? -1).toString()),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Text(
+                                    data.fullName ?? '',
+                                    style: const TextStyle(
+                                      color: Color(0xFF323238),
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  state.employeedata[index].role ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF949C9E),
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
+                                const SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Text(
+                                    data.role ?? '',
+                                    style: const TextStyle(
+                                      color: Color(0xFF949C9E),
+                                      fontSize: 14,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  state.employeedata[index].started ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF949C9E),
-                                    fontSize: 12,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
+                                const SizedBox(height: 8),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Text(
+                                    data.started ?? '',
+                                    style: const TextStyle(
+                                      color: Color(0xFF949C9E),
+                                      fontSize: 12,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              if (index != state.employeedata.length - 1)
-                                Divider(
-                                  color: Colors.grey.withOpacity(.15),
-                                  thickness: 1,
-                                )
-                            ],
+                                const SizedBox(height: 10),
+                                if (index != state.employeedata.length - 1)
+                                  Divider(
+                                    color: Colors.grey.withOpacity(.15),
+                                    thickness: 1,
+                                  )
+                              ],
+                            ),
                           );
                         }),
                     Container(
@@ -135,72 +139,76 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                         shrinkWrap: true,
                         itemCount: state.employeedata.length,
                         itemBuilder: (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  state.employeedata[index].fullName ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF323238),
-                                    fontSize: 16,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
+                          var data = state.employeedata[index];
+                          return Dismissible(
+                            key: Key((data.id ?? -1).toString()),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Text(
+                                    data.fullName ?? '',
+                                    style: const TextStyle(
+                                      color: Color(0xFF323238),
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  state.employeedata[index].role ?? '',
-                                  style: const TextStyle(
-                                    color: Color(0xFF949C9E),
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
+                                const SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Text(
+                                    data.role ?? '',
+                                    style: const TextStyle(
+                                      color: Color(0xFF949C9E),
+                                      fontSize: 14,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      state.employeedata[index].started ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF949C9E),
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
+                                const SizedBox(height: 8),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        data.started ?? '',
+                                        style: const TextStyle(
+                                          color: Color(0xFF949C9E),
+                                          fontSize: 12,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      state.employeedata[index].end ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF949C9E),
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
+                                      Text(
+                                        data.end ?? '',
+                                        style: const TextStyle(
+                                          color: Color(0xFF949C9E),
+                                          fontSize: 12,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              if (index != state.employeedata.length - 1)
-                                Divider(
-                                  color: Colors.grey.withOpacity(.15),
-                                  thickness: 1,
-                                )
-                            ],
+                                const SizedBox(height: 10),
+                                if (index != state.employeedata.length - 1)
+                                  Divider(
+                                    color: Colors.grey.withOpacity(.15),
+                                    thickness: 1,
+                                  )
+                              ],
+                            ),
                           );
                         }),
                   ],
@@ -225,7 +233,9 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
   void onDispose() {}
 
   @override
-  void onInit() {}
+  void onInit() {
+    context.read<EmployeeCubit>().getAllEmployee();
+  }
 
   @override
   void onPause() {}
