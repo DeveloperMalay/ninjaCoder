@@ -1,13 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ninjacoder/src/data/model/employee/employee_model.dart';
 import 'package:ninjacoder/src/presentation/base/base_state_wrapper.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
-import 'package:ninjacoder/src/presentation/widgets/calender_dialog.dart';
+import 'package:ninjacoder/src/presentation/widgets/end_calender_dialog.dart';
+import 'package:ninjacoder/src/presentation/widgets/start_calender_dialog.dart';
 import 'package:ninjacoder/src/presentation/widgets/mx_appbar.dart';
 import 'package:ninjacoder/src/shared/extension/string_ext.dart';
+import 'package:ninjacoder/src/shared/shared.dart';
 
 class AddEmpoyeeDetailsScreen extends StatefulWidget {
   const AddEmpoyeeDetailsScreen({super.key});
@@ -28,26 +28,6 @@ class _AddEmpoyeeDetailsScreenState
   @override
   Widget onBuild(
       BuildContext context, BoxConstraints constraints, PlatformType platform) {
-    // DateTime dateTime = DateTime.now();
-    // TimeOfDay _selectedTime = TimeOfDay.now();
-    DateTime _selectedStartDate = DateTime.now();
-    DateTime _selectedEndDate = DateTime.now();
-    Future<void> _selectDate(BuildContext context) async {
-      final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: _selectedStartDate,
-        firstDate: DateTime(2000), // Minimum selectable date
-        lastDate: DateTime(2101), // Maximum selectable date
-      );
-
-      if (picked != null && picked != _selectedStartDate) {
-        setState(() {
-          _selectedStartDate = picked;
-        });
-        log('selected Start date ${_selectedStartDate}');
-      }
-    }
-
     return BlocConsumer<EmployeeCubit, EmployeeState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -142,18 +122,16 @@ class _AddEmpoyeeDetailsScreenState
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) {
-                        //       return const CalenderDialog();
-                        //     });
-                        // log('${_selectedStartDate.toIso8601String()}');
-                        _selectDate(context);
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const StartCalenderDialog();
+                            });
                       },
                       child: Container(
+                        width: context.screenWidth * .4,
                         padding: const EdgeInsets.only(
                           left: 10,
-                          right: 50,
                           top: 10,
                           bottom: 10,
                         ),
@@ -169,9 +147,14 @@ class _AddEmpoyeeDetailsScreenState
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              _selectedStartDate
-                                  .toString()
-                                  .formatToCustomDate(),
+                              state.startDate.toString().formatToCustomDate() ==
+                                      DateTime.now()
+                                          .toString()
+                                          .formatToCustomDate()
+                                  ? "Today"
+                                  : state.startDate
+                                      .toString()
+                                      .formatToCustomDate(),
                               style: const TextStyle(
                                 color: Color(0xFF323238),
                                 fontSize: 14,
@@ -193,31 +176,37 @@ class _AddEmpoyeeDetailsScreenState
                         showDialog(
                             context: context,
                             builder: (context) {
-                              return const CalenderDialog();
+                              return const EndCalenderDialog();
                             });
                       },
                       child: Container(
+                        width: context.screenWidth * .4,
                         padding: const EdgeInsets.only(
                           left: 10,
-                          right: 50,
                           top: 10,
                           bottom: 10,
                         ),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(color: Colors.grey)),
-                        child: const Row(
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.event,
                               color: Colors.blue,
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
-                              '5 Sep 2022',
+                              state.endDate == DateTime(0)
+                                  ? 'No date'
+                                  : state.endDate
+                                      .toString()
+                                      .formatToCustomDate(),
                               style: TextStyle(
-                                color: Color(0xFF323238),
+                                color: state.endDate == DateTime(0)
+                                    ? Colors.grey
+                                    : Colors.black,
                                 fontSize: 14,
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w400,
@@ -272,13 +261,21 @@ class _AddEmpoyeeDetailsScreenState
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
-                        if (_controller.text.isNotEmpty && state.role != '') {
+                        if (_controller.text.isNotEmpty &&
+                            state.role != '' &&
+                            state.startDate.toString().isNotEmpty) {
                           var model = EmployeeModel(
                             fullName: _controller.text,
                             role: state.role,
+                            started:
+                                state.startDate.toString().formatToCustomDate(),
+                            end: state.endDate == DateTime(0)
+                                ? 'No date'
+                                : state.endDate.toString().formatToCustomDate(),
                           );
                           context.read<EmployeeCubit>().insertData(model);
                           Navigator.pop(context);
+                          context.read<EmployeeCubit>().getAllEmployee();
                         }
                       },
                       child: Container(
