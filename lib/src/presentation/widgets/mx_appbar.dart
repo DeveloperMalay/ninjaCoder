@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../screens/cubit/employee_cubit.dart';
 
 class MxBlankAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MxBlankAppBar({super.key});
@@ -44,9 +47,7 @@ class MxAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading ??
           IconButton(
             onPressed: () {
-              // if (context.canPop()) {
-              //   context.pop();
-              // }
+              context.read<EmployeeCubit>().getAllEmployee();
               Navigator.pop(context);
             },
             icon: const Icon(

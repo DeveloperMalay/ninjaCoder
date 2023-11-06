@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ninjacoder/src/data/client/employee_database_client.dart';
@@ -12,12 +13,12 @@ void main() async {
   // Initialize the database
   final dbHelper = EmployeeDatabaseClient.instance;
   await dbHelper.initDatabase();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  final botToastBuilder = BotToastInit();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -30,6 +31,10 @@ class MyApp extends StatelessWidget {
           useMaterial3: false,
         ),
         home: const EmployeeListScreen(),
+        builder: (context, child) {
+          child = botToastBuilder(context, child);
+          return child;
+        },
       ),
     );
   }

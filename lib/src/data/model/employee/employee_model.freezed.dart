@@ -26,9 +26,9 @@ mixin _$EmployeeModel {
   String? get fullName => throw _privateConstructorUsedError;
   @JsonKey(name: 'role')
   String? get role => throw _privateConstructorUsedError;
-  @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'started')
   String? get started => throw _privateConstructorUsedError;
-  @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'end')
   String? get end => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,10 +47,8 @@ abstract class $EmployeeModelCopyWith<$Res> {
       {@JsonKey(name: 'id', includeFromJson: true, includeToJson: true) int? id,
       @JsonKey(name: 'full_name') String? fullName,
       @JsonKey(name: 'role') String? role,
-      @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
-      String? started,
-      @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
-      String? end});
+      @JsonKey(name: 'started') String? started,
+      @JsonKey(name: 'end') String? end});
 }
 
 /// @nodoc
@@ -109,10 +107,8 @@ abstract class _$$EmployeeModelImplCopyWith<$Res>
       {@JsonKey(name: 'id', includeFromJson: true, includeToJson: true) int? id,
       @JsonKey(name: 'full_name') String? fullName,
       @JsonKey(name: 'role') String? role,
-      @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
-      String? started,
-      @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
-      String? end});
+      @JsonKey(name: 'started') String? started,
+      @JsonKey(name: 'end') String? end});
 }
 
 /// @nodoc
@@ -164,10 +160,8 @@ class _$EmployeeModelImpl implements _EmployeeModel {
       {@JsonKey(name: 'id', includeFromJson: true, includeToJson: true) this.id,
       @JsonKey(name: 'full_name') this.fullName,
       @JsonKey(name: 'role') this.role,
-      @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
-      this.started,
-      @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
-      this.end});
+      @JsonKey(name: 'started') this.started,
+      @JsonKey(name: 'end') this.end});
 
   factory _$EmployeeModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$EmployeeModelImplFromJson(json);
@@ -182,10 +176,10 @@ class _$EmployeeModelImpl implements _EmployeeModel {
   @JsonKey(name: 'role')
   final String? role;
   @override
-  @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'started')
   final String? started;
   @override
-  @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'end')
   final String? end;
 
   @override
@@ -231,10 +225,8 @@ abstract class _EmployeeModel implements EmployeeModel {
       final int? id,
       @JsonKey(name: 'full_name') final String? fullName,
       @JsonKey(name: 'role') final String? role,
-      @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
-      final String? started,
-      @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
-      final String? end}) = _$EmployeeModelImpl;
+      @JsonKey(name: 'started') final String? started,
+      @JsonKey(name: 'end') final String? end}) = _$EmployeeModelImpl;
 
   factory _EmployeeModel.fromJson(Map<String, dynamic> json) =
       _$EmployeeModelImpl.fromJson;
@@ -249,10 +241,10 @@ abstract class _EmployeeModel implements EmployeeModel {
   @JsonKey(name: 'role')
   String? get role;
   @override
-  @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'started')
   String? get started;
   @override
-  @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
+  @JsonKey(name: 'end')
   String? get end;
   @override
   @JsonKey(ignore: true)

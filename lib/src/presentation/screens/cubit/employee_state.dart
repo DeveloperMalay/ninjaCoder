@@ -30,7 +30,7 @@ class EmployeeState extends Equatable {
       status: EmployeeStatus.INITIAL,
       role: '',
       startDate: DateTime.now(),
-      endDate: DateTime.now(),
+      endDate: DateTime(0),
     );
   }
   @override

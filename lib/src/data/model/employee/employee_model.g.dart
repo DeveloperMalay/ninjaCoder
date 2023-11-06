@@ -20,4 +20,6 @@ Map<String, dynamic> _$$EmployeeModelImplToJson(_$EmployeeModelImpl instance) =>
       'id': instance.id,
       'full_name': instance.fullName,
       'role': instance.role,
+      'started': instance.started,
+      'end': instance.end,
     };

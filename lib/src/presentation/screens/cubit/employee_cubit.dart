@@ -9,6 +9,12 @@ part 'employee_state.dart';
 class EmployeeCubit extends Cubit<EmployeeState> {
   EmployeeCubit() : super(EmployeeState.initial());
 
+//*initial state
+
+  void getInitialState() {
+    emit(EmployeeState.initial());
+  }
+
 //* selecting employee role
   void selectRole(String role) {
     emit(state.copyWith(role: role));
@@ -28,7 +34,6 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
 
     await dbClient.insertEmployee(model);
-
     emit(state.copyWith(status: EmployeeStatus.LOADED));
   }
 
@@ -36,6 +41,7 @@ class EmployeeCubit extends Cubit<EmployeeState> {
   void getAllEmployee() async {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
     var res = await dbClient.getAllEmployees();
+
     emit(state.copyWith(status: EmployeeStatus.LOADED, employeedata: res));
   }
 
@@ -53,6 +59,15 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
 
     await dbClient.deleteEmployee(employeeId);
+
+    emit(state.copyWith(status: EmployeeStatus.LOADED));
+  }
+
+  //*undoing deleted data from local DB
+  void undoDelete() async {
+    emit(state.copyWith(status: EmployeeStatus.LOADING));
+
+    await dbClient.undoDelete();
 
     emit(state.copyWith(status: EmployeeStatus.LOADED));
   }

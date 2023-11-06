@@ -23,6 +23,7 @@ class _AddEmpoyeeDetailsScreenState
   @override
   void onInit() {
     _controller = TextEditingController();
+    context.read<EmployeeCubit>().getInitialState();
   }
 
   @override
@@ -32,6 +33,7 @@ class _AddEmpoyeeDetailsScreenState
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: const MxAppBar(
             title: Text('Add Employee Details'),
           ),

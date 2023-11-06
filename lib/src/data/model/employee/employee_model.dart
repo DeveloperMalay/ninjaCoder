@@ -10,10 +10,8 @@ class EmployeeModel with _$EmployeeModel {
     @JsonKey(name: 'id', includeFromJson: true, includeToJson: true) int? id,
     @JsonKey(name: 'full_name') String? fullName,
     @JsonKey(name: 'role') String? role,
-    @JsonKey(name: 'started', includeFromJson: true, includeToJson: false)
-    String? started,
-    @JsonKey(name: 'end', includeFromJson: true, includeToJson: false)
-    String? end,
+    @JsonKey(name: 'started') String? started,
+    @JsonKey(name: 'end') String? end,
   }) = _EmployeeModel;
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) =>
