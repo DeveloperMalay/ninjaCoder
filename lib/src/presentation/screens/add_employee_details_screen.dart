@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ninjacoder/src/data/model/employee/employee_model.dart';
@@ -263,6 +264,11 @@ class _AddEmpoyeeDetailsScreenState
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
+                        if (_controller.text.isEmpty) {
+                          BotToast.showText(text: 'Please enter your name');
+                        } else if (state.role == '') {
+                          BotToast.showText(text: 'Please select your role');
+                        }
                         if (_controller.text.isNotEmpty &&
                             state.role != '' &&
                             state.startDate.toString().isNotEmpty) {

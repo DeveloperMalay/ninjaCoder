@@ -84,10 +84,14 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                             var data = currentEmployee[index];
                             return Dismissible(
                               key: ValueKey((data.id ?? -1).toString()),
+                              direction: DismissDirection.endToStart,
+                              // confirmDismiss: (direction) =>
+                              //     showConfirmDismissDialog(direction, context),
                               onDismissed: (direction) {
                                 context
                                     .read<EmployeeCubit>()
-                                    .deleteData((data.id ?? -1));
+                                    .deleteData(data.id ?? -1);
+
                                 var snackbar = SnackBar(
                                   backgroundColor: Colors.black,
                                   content: const Text(
@@ -106,9 +110,9 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                     },
                                   ),
                                 );
-                                context.read<EmployeeCubit>().getAllEmployee();
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackbar);
+                                context.read<EmployeeCubit>().getAllEmployee();
                               },
                               background: Container(
                                 color: Colors.red,
@@ -176,6 +180,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                     Divider(
                                       color: Colors.grey.withOpacity(.15),
                                       thickness: 1,
+                                      height: 0,
                                     )
                                 ],
                               ),
@@ -213,9 +218,15 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                   motion: const ScrollMotion(),
                                   children: [
                                     SlidableAction(
+                                      autoClose: true,
                                       onPressed: (c) {
+                                        context
+                                            .read<EmployeeCubit>()
+                                            .deleteData(data.id ?? -1);
+                                        context
+                                            .read<EmployeeCubit>()
+                                            .getAllEmployee();
                                         var snackbar = SnackBar(
-                                          key: _scaffoldKey,
                                           backgroundColor: Colors.black,
                                           content: const Text(
                                             'Employee data has been deleted',
@@ -227,8 +238,9 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                             label: 'Undo',
                                             textColor: Colors.blue,
                                             onPressed: () {
-                                              ScaffoldMessenger.of(context)
-                                                  .hideCurrentSnackBar();
+                                              context
+                                                  .read<EmployeeCubit>()
+                                                  .undoDelete();
                                             },
                                           ),
                                         );
@@ -240,58 +252,61 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                       icon: Icons.delete,
                                     ),
                                   ]),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Text(
-                                      data.fullName ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF323238),
-                                        fontSize: 16,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w500,
+                              child: SizedBox(
+                                width: context.screenWidth,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Text(
+                                        data.fullName ?? '',
+                                        style: const TextStyle(
+                                          color: Color(0xFF323238),
+                                          fontSize: 16,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Text(
-                                      data.role ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF949C9E),
-                                        fontSize: 14,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
+                                    const SizedBox(height: 10),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Text(
+                                        data.role ?? '',
+                                        style: const TextStyle(
+                                          color: Color(0xFF949C9E),
+                                          fontSize: 14,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Text(
-                                      "${data.started ?? ''} - ${data.end ?? ''}",
-                                      style: const TextStyle(
-                                        color: Color(0xFF949C9E),
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
+                                    const SizedBox(height: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Text(
+                                        "${data.started ?? ''} - ${data.end ?? ''}",
+                                        style: const TextStyle(
+                                          color: Color(0xFF949C9E),
+                                          fontSize: 12,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  if (index != state.employeedata.length - 1)
-                                    Divider(
-                                      color: Colors.grey.withOpacity(.15),
-                                      thickness: 1,
-                                      height: 0,
-                                    )
-                                ],
+                                    const SizedBox(height: 10),
+                                    if (index != state.employeedata.length - 1)
+                                      Divider(
+                                        color: Colors.grey.withOpacity(.15),
+                                        thickness: 1,
+                                        height: 0,
+                                      )
+                                  ],
+                                ),
                               ),
                             );
                           }),
@@ -324,6 +339,35 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
               }));
             },
           ),
+        );
+      },
+    );
+  }
+
+  showConfirmDismissDialog(
+      DismissDirection direction, BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete this item?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(false); // Dismiss the dialog and cancel the dismissal.
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(true); // Dismiss the dialog and confirm the dismissal.
+              },
+            ),
+          ],
         );
       },
     );
