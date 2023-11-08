@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ninjacoder/src/presentation/screens/add_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
+import 'package:ninjacoder/src/presentation/widgets/ce_dismissible_widget.dart';
 import 'package:ninjacoder/src/shared/shared.dart';
 
 import '../base/base_state_wrapper.dart';
@@ -18,6 +19,11 @@ class EmployeeListScreen extends StatefulWidget {
 
 class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void onInit() {
+    context.read<EmployeeCubit>().getAllEmployee();
+  }
+
   @override
   Widget onBuild(
       BuildContext context, BoxConstraints constraints, PlatformType platform) {
@@ -73,89 +79,11 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           itemCount: state.currentEmployee.length,
                           itemBuilder: (context, index) {
                             var data = state.currentEmployee[index];
-                            return Dismissible(
-                              key: UniqueKey(),
-                              direction: DismissDirection.endToStart,
-                              confirmDismiss: (direction) =>
-                                  showConfirmDismissDialog(
-                                direction,
-                                context,
-                                data.id ?? -1,
-                              ),
-                              onUpdate: (DismissUpdateDetails progress) {
-                                log('progress ${progress.progress}');
-                              },
-                              onDismissed: (direction) {},
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                child: const Padding(
-                                  padding: EdgeInsets.only(right: 20.0),
-                                  child: Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Text(
-                                      data.fullName ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF323238),
-                                        fontSize: 16,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Text(
-                                      data.role ?? '',
-                                      style: const TextStyle(
-                                        color: Color(0xFF949C9E),
-                                        fontSize: 14,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "from ${data.started ?? ''}",
-                                          style: const TextStyle(
-                                            color: Color(0xFF949C9E),
-                                            fontSize: 12,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  if (index != state.employeedata.length - 1)
-                                    Divider(
-                                      color: Colors.grey.withOpacity(.15),
-                                      thickness: 1,
-                                      height: 0,
-                                    )
-                                ],
-                              ),
+                            return CEDismissibleWidget(
+                              c: _scaffoldKey.currentContext,
+                              data: data,
+                              showDivider:
+                                  index != state.employeedata.length - 1,
                             );
                           }),
                       if (state.previousEmployee.isNotEmpty)
@@ -266,6 +194,8 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                                 ),
                               ),
                             );
+                         
+                         
                           }),
                     ],
                   ),
@@ -336,21 +266,13 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                             textColor: Colors.blue,
                             onPressed: () {
                               try {
-                                context
-                                    .read<EmployeeCubit>()
-                                    .undoDelete()
-                                    .then((value) {
-                                  context
-                                      .read<EmployeeCubit>()
-                                      .getAllEmployee();
-                                });
+                                context.read<EmployeeCubit>().undoDelete();
                               } catch (e) {
                                 log('error $e');
                               }
                             }),
                       ),
                     );
-
                     context.read<EmployeeCubit>().getAllEmployee();
                     Navigator.of(context).pop(true);
                   }
@@ -367,9 +289,8 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
   void onDispose() {}
 
   @override
-  void onInit() {
-    context.read<EmployeeCubit>().getAllEmployee();
-    context.read<EmployeeCubit>().filterdata();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override

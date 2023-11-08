@@ -44,7 +44,7 @@ class EmployeeCubit extends Cubit<EmployeeState> {
   void getAllEmployee() async {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
     var res = await dbClient.getAllEmployees();
-
+    filterdata(res);
     emit(state.copyWith(status: EmployeeStatus.LOADED, employeedata: res));
   }
 
@@ -62,15 +62,13 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
     try {
       var deletedEmployee = await dbClient.getEmployeeById(employeeId);
-
       if (deletedEmployee != null) {
-        // Store the deleted employee data in the temporary list
         deletedEmployees.add(deletedEmployee);
       }
-
       var res = await dbClient.deleteEmployee(employeeId);
       log('delete res $res');
-      emit(state.copyWith(status: EmployeeStatus.LOADED));
+      emit(state.copyWith(
+          status: EmployeeStatus.LOADED, deletedEmployees: deletedEmployees));
       return true;
     } catch (e) {
       return false;
@@ -92,9 +90,11 @@ class EmployeeCubit extends Cubit<EmployeeState> {
   //*undoing deleted data from local DB
   Future<bool> undoDelete() async {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
+    log('deleted employee from undo func ${state.deletedEmployees}');
     try {
       if (state.deletedEmployees.isNotEmpty) {
         var lastDeletedEmployee = deletedEmployees.removeLast();
+        log('last deleted employee $lastDeletedEmployee');
         await dbClient.insertEmployee(lastDeletedEmployee);
         emit(state.copyWith(status: EmployeeStatus.LOADED));
       }
@@ -105,14 +105,14 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     }
   }
 
-  void filterdata() {
+  void filterdata(List<EmployeeModel> data) {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
-    var currentEmployee = state.employeedata.where(
+    var currentEmployee = data.where(
       (e) {
         return e.end == 'No date';
       },
     ).toList();
-    var previousEmployee = state.employeedata.where(
+    var previousEmployee = data.where(
       (e) {
         if (e.end != 'No date') {
           var sd = (e.started ?? '').toString().toDate();
@@ -127,6 +127,7 @@ class EmployeeCubit extends Cubit<EmployeeState> {
         }
       },
     ).toList();
+    log('current employee $currentEmployee\n previous employee $previousEmployee');
     emit(state.copyWith(
       status: EmployeeStatus.LOADED,
       currentEmployee: currentEmployee,
