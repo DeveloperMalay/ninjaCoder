@@ -1,16 +1,50 @@
-# ninjacoder
+# Employee Management App
 
-A new Flutter project.
+**Employee Management App** is a Flutter application for managing employee data. It allows users to add, edit, and delete employee records. The app uses BLoC/Cubit for state management and persists data using a local database. Additionally, it includes a date picker that is designed to look and work as expected.
 
-## Getting Started
+## Table of Contents
 
-This project is a starting point for a Flutter application.
+- [Features](#features)
+- [State Management](#state-management)
+- [Database](#database)
+- [Date Picker](#date-picker)
+- [Contributing](#contributing)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Add new employee records with details such as name, role, started date, and ending date information.
+- Edit existing employee records to update their information.
+- Delete employee records from the database.
+- BLoC/Cubit state management for managing application state.
+- Local database for persisting employee data.
+- Customized date picker that adheres to the design requirements.
+
+# State Management
+The application uses the BLoC/Cubit pattern for state management. State management logic can be found in the lib/bloc directory. You can customize and extend this logic as needed.
+
+# Database
+The app uses a local database to persist employee data. The database setup can be found in the lib/data directory. You can configure the database settings to meet your requirements. I am using SQLite to make the local database.
+
+# Date Picker
+The date picker component has been customized to match the design requirements. It allows users to select dates for employee records. The code for the date picker can be found in the lib/widgets directory I am using the table_calendar package for creating this feature.
+
+# Contributing
+We welcome contributions from the community. If you have suggestions, feature requests, or bug reports, please open an issue or create a pull request. For major changes, please discuss them in the repository's issues section.
+
+# Project Demo Video
+
+
+
+https://github.com/DeveloperMalay/ninjaCoder/assets/94185006/747cf2d3-38b7-4ee5-a9e8-22e357725fae
+
+
+
+https://github.com/DeveloperMalay/ninjaCoder/assets/94185006/868754a9-4c41-49e9-9fca-08c1707956bc
+
+
+
+
+
+
+
