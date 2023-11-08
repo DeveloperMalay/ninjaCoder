@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ninjacoder/src/presentation/screens/add_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
+import 'package:ninjacoder/src/presentation/screens/update_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/widgets/ce_dismissible_widget.dart';
 import 'package:ninjacoder/src/presentation/widgets/pe_dismissible_widget.dart';
 import 'package:ninjacoder/src/shared/shared.dart';
@@ -80,11 +81,22 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           itemCount: state.currentEmployee.length,
                           itemBuilder: (context, index) {
                             var data = state.currentEmployee[index];
-                            return CEDismissibleWidget(
-                              c: _scaffoldKey.currentContext,
-                              data: data,
-                              showDivider:
-                                  index != state.currentEmployee.length - 1,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return UpdateEmployeeDetailsScreen(
+                                    model: data,
+                                    id: data.id ?? -1,
+                                  );
+                                }));
+                              },
+                              child: CEDismissibleWidget(
+                                c: _scaffoldKey.currentContext,
+                                data: data,
+                                showDivider:
+                                    index != state.currentEmployee.length - 1,
+                              ),
                             );
                           }),
                       if (state.previousEmployee.isNotEmpty)
@@ -114,11 +126,22 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             var data = state.previousEmployee[index];
-                            return PeDismissibleWidget(
-                              c: _scaffoldKey.currentContext,
-                              data: data,
-                              showDivider:
-                                  index != state.previousEmployee.length - 1,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return UpdateEmployeeDetailsScreen(
+                                    model: data,
+                                    id: data.id ?? -1,
+                                  );
+                                }));
+                              },
+                              child: PeDismissibleWidget(
+                                c: _scaffoldKey.currentContext,
+                                data: data,
+                                showDivider:
+                                    index != state.previousEmployee.length - 1,
+                              ),
                             );
                           }),
                     ],

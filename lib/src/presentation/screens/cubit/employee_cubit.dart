@@ -75,6 +75,10 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     }
   }
 
+  Future<EmployeeModel> getEmployeeDataByID(int employeeId) async {
+    var employeeData = await dbClient.getEmployeeById(employeeId);
+    return employeeData ?? const EmployeeModel();
+  }
   // Future<bool> deleteData(int employeeId) async {
   //   emit(state.copyWith(status: EmployeeStatus.LOADING));
   //   try {
