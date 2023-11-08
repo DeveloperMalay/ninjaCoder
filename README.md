@@ -8,7 +8,6 @@
 - [State Management](#state-management)
 - [Database](#database)
 - [Date Picker](#date-picker)
-- [Contributing](#contributing)
 
 
 ## Features
@@ -29,8 +28,6 @@ The app uses a local database to persist employee data. The database setup can b
 # Date Picker
 The date picker component has been customized to match the design requirements. It allows users to select dates for employee records. The code for the date picker can be found in the lib/widgets directory I am using the table_calendar package for creating this feature.
 
-# Contributing
-We welcome contributions from the community. If you have suggestions, feature requests, or bug reports, please open an issue or create a pull request. For major changes, please discuss them in the repository's issues section.
 
 # Project Demo Video
 
