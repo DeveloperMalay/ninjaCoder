@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ninjacoder/src/data/model/employee/employee_model.dart';
@@ -55,19 +57,26 @@ class EmployeeCubit extends Cubit<EmployeeState> {
   }
 
   //*deleting data from local DB
-  void deleteData(int employeeId) async {
+  Future<bool> deleteData(int employeeId) async {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
-
-    await dbClient.deleteEmployee(employeeId);
-
-    emit(state.copyWith(status: EmployeeStatus.LOADED));
+    try {
+      var res = await dbClient.deleteEmployee(employeeId);
+      log('delete res $res');
+      emit(state.copyWith(status: EmployeeStatus.LOADED));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   //*undoing deleted data from local DB
   void undoDelete() async {
     emit(state.copyWith(status: EmployeeStatus.LOADING));
-
-    await dbClient.undoDelete();
+    try {
+      await dbClient.undoDelete();
+    } catch (e) {
+      log('undo delete error $e');
+    }
 
     emit(state.copyWith(status: EmployeeStatus.LOADED));
   }

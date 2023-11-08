@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ninjacoder/src/presentation/screens/add_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
+import 'package:ninjacoder/src/shared/extension/string_ext.dart';
 import 'package:ninjacoder/src/shared/shared.dart';
 
 import '../base/base_state_wrapper.dart';
@@ -24,6 +26,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
       BuildContext context, BoxConstraints constraints, PlatformType platform) {
     return BlocConsumer<EmployeeCubit, EmployeeState>(
       listener: (context, state) {
+        log(state.status.toString());
         if (state.status == EmployeeStatus.LOADING) {
           BotToast.showLoading();
         } else {
@@ -38,10 +41,22 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
         ).toList();
         var previousEmployee = state.employeedata.where(
           (e) {
-            return e.end != 'No date';
+            if (e.end != 'No date') {
+              var sd = (e.started ?? '').toString().toDate();
+              log('stared $sd');
+              var ed = (e.end ?? '').toString().toDate();
+              log('stared $ed');
+              var show = ed.isAfter(sd);
+              log('show $show');
+              return show;
+            } else {
+              return false;
+            }
           },
         ).toList();
+        log('state.employeedata ${state.employeedata}');
         return Scaffold(
+          key: _scaffoldKey,
           appBar: MxAppBar(
             leading: Container(),
             title: const Text('Employee List'),
@@ -83,37 +98,18 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           itemBuilder: (context, index) {
                             var data = currentEmployee[index];
                             return Dismissible(
-                              key: ValueKey((data.id ?? -1).toString()),
+                              key: UniqueKey(),
                               direction: DismissDirection.endToStart,
-                              // confirmDismiss: (direction) =>
-                              //     showConfirmDismissDialog(direction, context),
-                              onDismissed: (direction) {
-                                context
-                                    .read<EmployeeCubit>()
-                                    .deleteData(data.id ?? -1);
-
-                                var snackbar = SnackBar(
-                                  backgroundColor: Colors.black,
-                                  content: const Text(
-                                    'Employee data has been deleted',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'Undo',
-                                    textColor: Colors.blue,
-                                    onPressed: () {
-                                      context
-                                          .read<EmployeeCubit>()
-                                          .undoDelete();
-                                    },
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackbar);
-                                context.read<EmployeeCubit>().getAllEmployee();
+                              confirmDismiss: (direction) =>
+                                  showConfirmDismissDialog(
+                                direction,
+                                context,
+                                data.id ?? -1,
+                              ),
+                              onUpdate: (DismissUpdateDetails progress) {
+                                log('progress ${progress.progress}');
                               },
+                              onDismissed: (direction) {},
                               background: Container(
                                 color: Colors.red,
                                 alignment: Alignment.centerRight,
@@ -186,25 +182,26 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                               ),
                             );
                           }),
-                      Container(
-                        width: context.screenWidth,
-                        height: 56,
-                        decoration:
-                            BoxDecoration(color: Colors.grey.withOpacity(.15)),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
-                          child: Text(
-                            'Previous employees',
-                            style: TextStyle(
-                              color: Color(0xFF1DA1F2),
-                              fontSize: 16,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w500,
+                      if (previousEmployee.isNotEmpty)
+                        Container(
+                          width: context.screenWidth,
+                          height: 56,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(.15)),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 15),
+                            child: Text(
+                              'Previous employees',
+                              style: TextStyle(
+                                color: Color(0xFF1DA1F2),
+                                fontSize: 16,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       const SizedBox(height: 15),
                       ListView.builder(
                           shrinkWrap: true,
@@ -212,46 +209,30 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             var data = previousEmployee[index];
-                            return Slidable(
-                              key: ValueKey((data.id ?? -1).toString()),
-                              endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      autoClose: true,
-                                      onPressed: (c) {
-                                        context
-                                            .read<EmployeeCubit>()
-                                            .deleteData(data.id ?? -1);
-                                        context
-                                            .read<EmployeeCubit>()
-                                            .getAllEmployee();
-                                        var snackbar = SnackBar(
-                                          backgroundColor: Colors.black,
-                                          content: const Text(
-                                            'Employee data has been deleted',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          action: SnackBarAction(
-                                            label: 'Undo',
-                                            textColor: Colors.blue,
-                                            onPressed: () {
-                                              context
-                                                  .read<EmployeeCubit>()
-                                                  .undoDelete();
-                                            },
-                                          ),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackbar);
-                                      },
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.delete,
-                                    ),
-                                  ]),
+                            return Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (direction) =>
+                                  showConfirmDismissDialog(
+                                direction,
+                                context,
+                                data.id ?? -1,
+                              ),
+                              onUpdate: (DismissUpdateDetails progress) {
+                                log('progress ${progress.progress}');
+                              },
+                              onDismissed: (direction) {},
+                              background: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                child: const Padding(
+                                  padding: EdgeInsets.only(right: 20.0),
+                                  child: Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                               child: SizedBox(
                                 width: context.screenWidth,
                                 child: Column(
@@ -344,27 +325,49 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
     );
   }
 
-  showConfirmDismissDialog(
-      DismissDirection direction, BuildContext context) async {
+  Future<bool?> showConfirmDismissDialog(
+      DismissDirection direction, BuildContext context, int id) async {
     return await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: Text('Are you sure you want to delete this item?'),
+          title: const Text('Confirm Delete'),
+          content:
+              const Text('Are you sure you want to delete this employee data?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // Dismiss the dialog and cancel the dismissal.
+                Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: const Text('Delete'),
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // Dismiss the dialog and confirm the dismissal.
+                context.read<EmployeeCubit>().deleteData(id).then((value) {
+                  if (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.black,
+                        content: const Text(
+                          'Employee data has been deleted',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          textColor: Colors.blue,
+                          onPressed: () {
+                            context.read<EmployeeCubit>().undoDelete();
+                          },
+                        ),
+                      ),
+                    );
+                    context.read<EmployeeCubit>().getAllEmployee();
+                    Navigator.of(context).pop(true);
+                  }
+                });
               },
             ),
           ],

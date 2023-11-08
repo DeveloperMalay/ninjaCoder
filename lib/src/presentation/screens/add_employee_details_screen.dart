@@ -33,281 +33,302 @@ class _AddEmpoyeeDetailsScreenState
     return BlocConsumer<EmployeeCubit, EmployeeState>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: const MxAppBar(
-            title: Text('Add Employee Details'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.blue,
-                      ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.person_outlined,
-                      color: Colors.blue,
-                    ),
-                    hintText: 'Employee name',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15),
-                      )),
-                      builder: (context) {
-                        return bottomSheetWidget();
-                      },
-                    );
-                  },
-                  child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
+        return WillPopScope(
+          onWillPop: () async {
+            context.read<EmployeeCubit>().getAllEmployee();
+            return true;
+          },
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: const MxAppBar(
+              title: Text('Add Employee Details'),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 10),
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey)),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.work_outline,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
                           color: Colors.blue,
                         ),
-                        const SizedBox(width: 10),
-                        state.role == ""
-                            ? const Text(
-                                'Select role',
-                                style: TextStyle(
-                                  color: Color(0xFF949C9E),
-                                  fontSize: 16,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.person_outlined,
+                        color: Colors.blue,
+                      ),
+                      hintText: 'Employee name',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15),
+                            topLeft: Radius.circular(15),
+                          ),
+                        ),
+                        builder: (context) {
+                          return bottomSheetWidget();
+                        },
+                      );
+                    },
+                    child: Container(
+                      height: 45,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: Colors.grey)),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.work_outline,
+                            color: Colors.blue,
+                          ),
+                          const SizedBox(width: 10),
+                          state.role == ""
+                              ? const Text(
+                                  'Select role',
+                                  style: TextStyle(
+                                    color: Color(0xFF949C9E),
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              : Text(
+                                  state.role,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                          const Spacer(),
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.blue,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 23),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const StartCalenderDialog();
+                              });
+                        },
+                        child: Container(
+                          width: context.screenWidth * .4,
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.grey)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.event,
+                                color: Colors.blue,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                state.startDate
+                                            .toString()
+                                            .formatToCustomDate() ==
+                                        DateTime.now()
+                                            .toString()
+                                            .formatToCustomDate()
+                                    ? "Today"
+                                    : state.startDate
+                                        .toString()
+                                        .formatToCustomDate(),
+                                style: const TextStyle(
+                                  color: Color(0xFF323238),
+                                  fontSize: 14,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w400,
                                 ),
                               )
-                            : Text(
-                                state.role,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward,
+                        size: 20,
+                        color: Colors.blue,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const EndCalenderDialog();
+                              });
+                        },
+                        child: Container(
+                          width: context.screenWidth * .4,
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.grey)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.event,
+                                color: Colors.blue,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                state.endDate == DateTime(0)
+                                    ? 'No date'
+                                    : state.endDate
+                                        .toString()
+                                        .formatToCustomDate(),
+                                style: TextStyle(
+                                  color: state.endDate == DateTime(0)
+                                      ? Colors.grey
+                                      : Colors.black,
+                                  fontSize: 14,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w400,
                                 ),
-                              ),
-                        const Spacer(),
-                        const Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.blue,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 23),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const StartCalenderDialog();
-                            });
-                      },
-                      child: Container(
-                        width: context.screenWidth * .4,
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.grey)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.event,
-                              color: Colors.blue,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              state.startDate.toString().formatToCustomDate() ==
-                                      DateTime.now()
-                                          .toString()
-                                          .formatToCustomDate()
-                                  ? "Today"
-                                  : state.startDate
-                                      .toString()
-                                      .formatToCustomDate(),
-                              style: const TextStyle(
-                                color: Color(0xFF323238),
-                                fontSize: 14,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward,
-                      size: 20,
-                      color: Colors.blue,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const EndCalenderDialog();
-                            });
-                      },
-                      child: Container(
-                        width: context.screenWidth * .4,
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.grey)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.event,
-                              color: Colors.blue,
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            bottomSheet: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Divider(
+                    height: 0,
+                    thickness: 1,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: const Color(0xFFEDF8FF),
+                          ),
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Color(0xFF1DA1F2),
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w500,
                             ),
-                            const SizedBox(width: 10),
-                            Text(
-                              state.endDate == DateTime(0)
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          var show = state.endDate.isAfter(state.startDate);
+
+                          if (_controller.text.isEmpty) {
+                            BotToast.showText(text: 'Please enter your name');
+                          } else if (state.role == '') {
+                            BotToast.showText(text: 'Please select your role');
+                          } else if (state.endDate
+                                      .toString()
+                                      .formatToCustomDate() !=
+                                  '1 Jan 0' &&
+                              !show) {
+                            BotToast.showText(
+                                text: 'Start date cannot be after end date.');
+                          } else if (_controller.text.isNotEmpty &&
+                              state.role != '' &&
+                              state.startDate.toString().isNotEmpty) {
+                            var model = EmployeeModel(
+                              fullName: _controller.text,
+                              role: state.role,
+                              started: state.startDate
+                                  .toString()
+                                  .formatToCustomDate(),
+                              end: state.endDate == DateTime(0)
                                   ? 'No date'
                                   : state.endDate
                                       .toString()
                                       .formatToCustomDate(),
-                              style: TextStyle(
-                                color: state.endDate == DateTime(0)
-                                    ? Colors.grey
-                                    : Colors.black,
-                                fontSize: 14,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          bottomSheet: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Divider(
-                  height: 0,
-                  thickness: 1,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: const Color(0xFFEDF8FF),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: Color(0xFF1DA1F2),
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
+                            );
+                            context.read<EmployeeCubit>().insertData(model);
+                            Navigator.pop(context);
+                            context.read<EmployeeCubit>().getAllEmployee();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: const Color(0xFF1DA1F2),
+                          ),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        if (_controller.text.isEmpty) {
-                          BotToast.showText(text: 'Please enter your name');
-                        } else if (state.role == '') {
-                          BotToast.showText(text: 'Please select your role');
-                        }
-                        if (_controller.text.isNotEmpty &&
-                            state.role != '' &&
-                            state.startDate.toString().isNotEmpty) {
-                          var model = EmployeeModel(
-                            fullName: _controller.text,
-                            role: state.role,
-                            started:
-                                state.startDate.toString().formatToCustomDate(),
-                            end: state.endDate == DateTime(0)
-                                ? 'No date'
-                                : state.endDate.toString().formatToCustomDate(),
-                          );
-                          context.read<EmployeeCubit>().insertData(model);
-                          Navigator.pop(context);
-                          context.read<EmployeeCubit>().getAllEmployee();
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: const Color(0xFF1DA1F2),
-                        ),
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10)
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 10)
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
