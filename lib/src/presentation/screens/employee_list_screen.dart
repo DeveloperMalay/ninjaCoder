@@ -1,12 +1,9 @@
 import 'dart:developer';
-
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ninjacoder/src/presentation/screens/add_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
-import 'package:ninjacoder/src/shared/extension/string_ext.dart';
 import 'package:ninjacoder/src/shared/shared.dart';
 
 import '../base/base_state_wrapper.dart';
@@ -28,33 +25,12 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
       listener: (context, state) {
         log(state.status.toString());
         if (state.status == EmployeeStatus.LOADING) {
-          BotToast.showLoading();
+          showLoading();
         } else {
-          BotToast.closeAllLoading();
+          hideLoading();
         }
       },
       builder: (context, state) {
-        var currentEmployee = state.employeedata.where(
-          (e) {
-            return e.end == 'No date';
-          },
-        ).toList();
-        var previousEmployee = state.employeedata.where(
-          (e) {
-            if (e.end != 'No date') {
-              var sd = (e.started ?? '').toString().toDate();
-              log('stared $sd');
-              var ed = (e.end ?? '').toString().toDate();
-              log('stared $ed');
-              var show = ed.isAfter(sd);
-              log('show $show');
-              return show;
-            } else {
-              return false;
-            }
-          },
-        ).toList();
-        log('state.employeedata ${state.employeedata}');
         return Scaffold(
           key: _scaffoldKey,
           appBar: MxAppBar(
@@ -69,7 +45,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (currentEmployee.isNotEmpty)
+                      if (state.currentEmployee.isNotEmpty)
                         Container(
                           width: context.screenWidth,
                           height: 56,
@@ -89,14 +65,14 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                             ),
                           ),
                         ),
-                      if (currentEmployee.isNotEmpty)
+                      if (state.currentEmployee.isNotEmpty)
                         const SizedBox(height: 15),
                       ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: currentEmployee.length,
+                          itemCount: state.currentEmployee.length,
                           itemBuilder: (context, index) {
-                            var data = currentEmployee[index];
+                            var data = state.currentEmployee[index];
                             return Dismissible(
                               key: UniqueKey(),
                               direction: DismissDirection.endToStart,
@@ -182,7 +158,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                               ),
                             );
                           }),
-                      if (previousEmployee.isNotEmpty)
+                      if (state.previousEmployee.isNotEmpty)
                         Container(
                           width: context.screenWidth,
                           height: 56,
@@ -205,17 +181,17 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                       const SizedBox(height: 15),
                       ListView.builder(
                           shrinkWrap: true,
-                          itemCount: previousEmployee.length,
+                          itemCount: state.previousEmployee.length,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            var data = previousEmployee[index];
+                            var data = state.previousEmployee[index];
                             return Dismissible(
                               key: UniqueKey(),
                               direction: DismissDirection.endToStart,
                               confirmDismiss: (direction) =>
                                   showConfirmDismissDialog(
                                 direction,
-                                context,
+                                _scaffoldKey.currentContext ?? context,
                                 data.id ?? -1,
                               ),
                               onUpdate: (DismissUpdateDetails progress) {
@@ -356,14 +332,25 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           ),
                         ),
                         action: SnackBarAction(
-                          label: 'Undo',
-                          textColor: Colors.blue,
-                          onPressed: () {
-                            context.read<EmployeeCubit>().undoDelete();
-                          },
-                        ),
+                            label: 'Undo',
+                            textColor: Colors.blue,
+                            onPressed: () {
+                              try {
+                                context
+                                    .read<EmployeeCubit>()
+                                    .undoDelete()
+                                    .then((value) {
+                                  context
+                                      .read<EmployeeCubit>()
+                                      .getAllEmployee();
+                                });
+                              } catch (e) {
+                                log('error $e');
+                              }
+                            }),
                       ),
                     );
+
                     context.read<EmployeeCubit>().getAllEmployee();
                     Navigator.of(context).pop(true);
                   }
@@ -382,6 +369,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
   @override
   void onInit() {
     context.read<EmployeeCubit>().getAllEmployee();
+    context.read<EmployeeCubit>().filterdata();
   }
 
   @override

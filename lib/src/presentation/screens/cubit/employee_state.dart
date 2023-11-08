@@ -16,13 +16,18 @@ class EmployeeState extends Equatable {
   final String role;
   final DateTime startDate;
   final DateTime endDate;
-
+  final List<EmployeeModel> deletedEmployees;
+  final List<EmployeeModel> currentEmployee;
+  final List<EmployeeModel> previousEmployee;
   const EmployeeState({
     required this.employeedata,
     required this.status,
     required this.role,
     required this.startDate,
     required this.endDate,
+    required this.deletedEmployees,
+    required this.currentEmployee,
+    required this.previousEmployee,
   });
   factory EmployeeState.initial() {
     return EmployeeState(
@@ -31,10 +36,22 @@ class EmployeeState extends Equatable {
       role: '',
       startDate: DateTime.now(),
       endDate: DateTime(0),
+      deletedEmployees: const [],
+      currentEmployee: const [],
+      previousEmployee: const [],
     );
   }
   @override
-  List<Object?> get props => [employeedata, status, role, startDate, endDate];
+  List<Object?> get props => [
+        employeedata,
+        status,
+        role,
+        startDate,
+        endDate,
+        deletedEmployees,
+        currentEmployee,
+        previousEmployee
+      ];
 
   EmployeeState copyWith({
     List<EmployeeModel>? employeedata,
@@ -42,6 +59,9 @@ class EmployeeState extends Equatable {
     String? role,
     DateTime? startDate,
     DateTime? endDate,
+    List<EmployeeModel>? deletedEmployees,
+    List<EmployeeModel>? currentEmployee,
+    List<EmployeeModel>? previousEmployee,
   }) {
     return EmployeeState(
       employeedata: employeedata ?? this.employeedata,
@@ -49,6 +69,9 @@ class EmployeeState extends Equatable {
       role: role ?? this.role,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      deletedEmployees: deletedEmployees ?? this.deletedEmployees,
+      currentEmployee: currentEmployee ?? this.currentEmployee,
+      previousEmployee: previousEmployee ?? this.previousEmployee,
     );
   }
 }

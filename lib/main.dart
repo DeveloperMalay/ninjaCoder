@@ -7,10 +7,7 @@ import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
 import 'src/presentation/screens/employee_list_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Ensure that Flutter bindings are initialized.
-
-  // Initialize the database
+  WidgetsFlutterBinding.ensureInitialized();
   final dbHelper = EmployeeDatabaseClient.instance;
   await dbHelper.initDatabase();
   runApp(MyApp());

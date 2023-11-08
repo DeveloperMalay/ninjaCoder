@@ -31,7 +31,13 @@ class _AddEmpoyeeDetailsScreenState
   Widget onBuild(
       BuildContext context, BoxConstraints constraints, PlatformType platform) {
     return BlocConsumer<EmployeeCubit, EmployeeState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state.status == EmployeeStatus.LOADING) {
+          showLoading();
+        } else {
+          hideLoading();
+        }
+      },
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {

@@ -18,7 +18,7 @@ abstract class BaseStateWrapper<T extends StatefulWidget> extends State<T>
 
   void onResume();
 
-  // GetIt get injector => getIt;
+  
 
   @override
   void initState() {
