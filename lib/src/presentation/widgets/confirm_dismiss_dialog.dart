@@ -23,8 +23,8 @@ Future<bool?> showConfirmDismissDialog(
           ),
           TextButton(
             child: const Text('Delete'),
-            onPressed: () {
-              context.read<EmployeeCubit>().deleteData(id).then((value) {
+            onPressed: () async {
+              await context.read<EmployeeCubit>().deleteData(id).then((value) {
                 if (value) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

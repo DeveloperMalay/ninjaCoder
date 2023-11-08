@@ -89,8 +89,8 @@ class EmployeeCubit extends Cubit<EmployeeState> {
 
   //*undoing deleted data from local DB
   Future<bool> undoDelete() async {
-    emit(state.copyWith(status: EmployeeStatus.LOADING));
     log('deleted employee from undo func ${state.deletedEmployees}');
+    emit(state.copyWith(status: EmployeeStatus.LOADING));
     try {
       if (state.deletedEmployees.isNotEmpty) {
         var lastDeletedEmployee = deletedEmployees.removeLast();

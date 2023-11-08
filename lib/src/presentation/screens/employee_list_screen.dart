@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:ninjacoder/src/presentation/screens/add_employee_details_screen.dart';
 import 'package:ninjacoder/src/presentation/screens/cubit/employee_cubit.dart';
 import 'package:ninjacoder/src/presentation/widgets/ce_dismissible_widget.dart';
+import 'package:ninjacoder/src/presentation/widgets/pe_dismissible_widget.dart';
 import 'package:ninjacoder/src/shared/shared.dart';
 
 import '../base/base_state_wrapper.dart';
@@ -83,7 +84,7 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                               c: _scaffoldKey.currentContext,
                               data: data,
                               showDivider:
-                                  index != state.employeedata.length - 1,
+                                  index != state.currentEmployee.length - 1,
                             );
                           }),
                       if (state.previousEmployee.isNotEmpty)
@@ -113,89 +114,12 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             var data = state.previousEmployee[index];
-                            return Dismissible(
-                              key: UniqueKey(),
-                              direction: DismissDirection.endToStart,
-                              confirmDismiss: (direction) =>
-                                  showConfirmDismissDialog(
-                                direction,
-                                _scaffoldKey.currentContext ?? context,
-                                data.id ?? -1,
-                              ),
-                              onUpdate: (DismissUpdateDetails progress) {
-                                log('progress ${progress.progress}');
-                              },
-                              onDismissed: (direction) {},
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                child: const Padding(
-                                  padding: EdgeInsets.only(right: 20.0),
-                                  child: Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              child: SizedBox(
-                                width: context.screenWidth,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15),
-                                      child: Text(
-                                        data.fullName ?? '',
-                                        style: const TextStyle(
-                                          color: Color(0xFF323238),
-                                          fontSize: 16,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15),
-                                      child: Text(
-                                        data.role ?? '',
-                                        style: const TextStyle(
-                                          color: Color(0xFF949C9E),
-                                          fontSize: 14,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15),
-                                      child: Text(
-                                        "${data.started ?? ''} - ${data.end ?? ''}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF949C9E),
-                                          fontSize: 12,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    if (index != state.employeedata.length - 1)
-                                      Divider(
-                                        color: Colors.grey.withOpacity(.15),
-                                        thickness: 1,
-                                        height: 0,
-                                      )
-                                  ],
-                                ),
-                              ),
+                            return PeDismissibleWidget(
+                              c: _scaffoldKey.currentContext,
+                              data: data,
+                              showDivider:
+                                  index != state.previousEmployee.length - 1,
                             );
-                         
-                         
                           }),
                     ],
                   ),
@@ -231,66 +155,26 @@ class _EmployeeListScreenState extends BaseStateWrapper<EmployeeListScreen> {
     );
   }
 
-  Future<bool?> showConfirmDismissDialog(
-      DismissDirection direction, BuildContext context, int id) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirm Delete'),
-          content:
-              const Text('Are you sure you want to delete this employee data?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              child: const Text('Delete'),
-              onPressed: () {
-                context.read<EmployeeCubit>().deleteData(id).then((value) {
-                  if (value) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.black,
-                        content: const Text(
-                          'Employee data has been deleted',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        action: SnackBarAction(
-                            label: 'Undo',
-                            textColor: Colors.blue,
-                            onPressed: () {
-                              try {
-                                context.read<EmployeeCubit>().undoDelete();
-                              } catch (e) {
-                                log('error $e');
-                              }
-                            }),
-                      ),
-                    );
-                    context.read<EmployeeCubit>().getAllEmployee();
-                    Navigator.of(context).pop(true);
-                  }
-                });
-              },
-            ),
-          ],
-        );
-      },
+  @override
+  void onDispose() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.black,
+        content: const Text(
+          'Employee data has been deleted',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        action: SnackBarAction(
+          label: 'Undo',
+          textColor: Colors.blue,
+          onPressed: () {
+            context.read<EmployeeCubit>().undoDelete();
+          },
+        ),
+      ),
     );
-  }
-
-  @override
-  void onDispose() {}
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
